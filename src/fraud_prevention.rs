@@ -10,8 +10,7 @@ pub trait FraudPreventionRequestBuilder {
 }
 impl FraudPreventionRequestBuilder for reqwest::RequestBuilder {
     fn add_fraud_prevention_headers(self) -> Self {
-        dbg!(self
-            .header("Gov-Client-Connection-Method", "DESKTOP_APP_DIRECT")
+        self.header("Gov-Client-Connection-Method", "DESKTOP_APP_DIRECT")
             .header("Gov-Client-Device-ID", DEVICE_ID)
             .header(
                 "Gov-Client-Local-IPs",
@@ -34,18 +33,18 @@ impl FraudPreventionRequestBuilder for reqwest::RequestBuilder {
             //.header("Gov-Client-Multi-Factor", "") // MFA n/a
             .header(
                 "Gov-Client-Screens",
-                "width=1920&height=1080&scaling-factor=1&colour-depth=16" // cli n/a
+                "width=1920&height=1080&scaling-factor=1&colour-depth=16", // cli n/a
             )
             .header("Gov-Client-Window-Size", "width=1920&height=1080") // cli n/a
             .header(
                 "Gov-Vendor-License-IDs",
-                format!("mtd-vat-cli={}", blake3::hash(b"foss"))
+                format!("mtd-vat-cli={}", blake3::hash(b"foss")),
             )
             .header("Gov-Vendor-Product-Name", "mtd-vat-cli")
             .header(
                 "Gov-Vendor-Version",
                 format!("mtd-vat-cli={}", env!("CARGO_PKG_VERSION")),
-            ))
+            )
     }
 }
 

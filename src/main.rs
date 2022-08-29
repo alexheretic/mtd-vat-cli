@@ -1,6 +1,6 @@
 mod auth;
-mod fraud_prevention;
 mod error;
+mod fraud_prevention;
 mod vat;
 
 use clap::Parser;
