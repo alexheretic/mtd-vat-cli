@@ -1,5 +1,6 @@
 mod auth;
-mod reqwest_ext;
+mod fraud_prevention;
+mod error;
 mod vat;
 
 use clap::Parser;

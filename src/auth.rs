@@ -1,4 +1,4 @@
-use crate::{reqwest_ext::ResponseExt, API_URL, WWW_URL};
+use crate::{error::ResponseExt, API_URL, WWW_URL};
 use anyhow::{anyhow, Context};
 use axum::{extract::Query, routing::get, Extension, Router};
 use std::{

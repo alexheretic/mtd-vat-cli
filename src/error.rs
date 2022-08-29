@@ -1,5 +1,6 @@
 #[async_trait::async_trait]
 pub trait ResponseExt {
+    /// Returns an `Err` if response is an error, includes body in error message.
     async fn error_body_for_status(self) -> anyhow::Result<Self>
     where
         Self: Sized;

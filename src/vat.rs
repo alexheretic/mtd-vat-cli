@@ -1,4 +1,4 @@
-use crate::{reqwest_ext::ResponseExt, API_URL};
+use crate::{error::ResponseExt, fraud_prevention::FraudPreventionRequestBuilder, API_URL};
 
 pub struct Client {
     http: reqwest::Client,
@@ -25,6 +25,7 @@ impl Client {
             .query(&[("status", "O")])
             .header("Accept", "application/vnd.hmrc.1.0+json")
             .header("Authorization", format!("Bearer {}", self.access_token))
+            .add_fraud_prevention_headers()
             .send()
             .await?
             .error_body_for_status()
@@ -40,6 +41,7 @@ impl Client {
             .post(&format!("{API_URL}/organisations/vat/{}/returns", self.vrn))
             .header("Accept", "application/vnd.hmrc.1.0+json")
             .header("Authorization", format!("Bearer {}", self.access_token))
+            .add_fraud_prevention_headers()
             .json(vreturn)
             .send()
             .await?
