@@ -1,16 +1,16 @@
-use crate::{auth::Token, reqwest_ext::ResponseExt, API_URL};
+use crate::{reqwest_ext::ResponseExt, API_URL};
 
 pub struct Client {
     http: reqwest::Client,
-    token: Token,
+    access_token: String,
     vrn: String,
 }
 
 impl Client {
-    pub fn new(token: Token, vrn: String) -> Self {
+    pub fn new(access_token: String, vrn: String) -> Self {
         Self {
             http: reqwest::Client::new(),
-            token,
+            access_token,
             vrn,
         }
     }
@@ -24,10 +24,7 @@ impl Client {
             ))
             .query(&[("status", "O")])
             .header("Accept", "application/vnd.hmrc.1.0+json")
-            .header(
-                "Authorization",
-                format!("Bearer {}", self.token.access_token),
-            )
+            .header("Authorization", format!("Bearer {}", self.access_token))
             .send()
             .await?
             .error_body_for_status()
@@ -42,10 +39,7 @@ impl Client {
         self.http
             .post(&format!("{API_URL}/organisations/vat/{}/returns", self.vrn))
             .header("Accept", "application/vnd.hmrc.1.0+json")
-            .header(
-                "Authorization",
-                format!("Bearer {}", self.token.access_token),
-            )
+            .header("Authorization", format!("Bearer {}", self.access_token))
             .json(vreturn)
             .send()
             .await?

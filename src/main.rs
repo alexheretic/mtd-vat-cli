@@ -1,9 +1,9 @@
 mod auth;
-mod io;
 mod reqwest_ext;
 mod vat;
 
 use clap::Parser;
+use console::style;
 
 #[cfg(not(feature = "sandbox"))]
 const WWW_URL: &str = "https://www.tax.service.gov.uk";
@@ -30,9 +30,9 @@ pub struct Args {
     #[clap(long, env = "CLIENT_SECRET")]
     pub client_secret: String,
 
-    /// Re-run authorize even if token has already been cached.
+    /// Access token to be re-used from a previous run.
     #[clap(long)]
-    pub reauth: bool,
+    pub access_token: Option<String>,
 }
 
 #[tokio::main(flavor = "current_thread")]
@@ -41,15 +41,21 @@ async fn main() -> anyhow::Result<()> {
         client_id,
         client_secret,
         vrn,
-        reauth,
+        access_token,
     } = Args::parse();
 
-    let token = match io::read_token(&vrn).await? {
-        // reuse token (todo invalidate when it no longer works)
-        Some(token) if !reauth => token,
+    let token = match access_token {
+        Some(token) => token,
         _ => {
-            let token = auth::user_auth(&client_id, &client_secret).await?;
-            io::write_token(&vrn, &token).await?;
+            eprintln!("{}", style("Use browser permit app access...").yellow());
+            let token = auth::user_auth(&client_id, &client_secret)
+                .await?
+                .access_token;
+            eprintln!(
+                "{} To re-use token in subsequent runs add arg {}",
+                style("✓").green(),
+                style(format!("--access-token={token}")).cyan().bold()
+            );
             token
         }
     };
@@ -58,21 +64,27 @@ async fn main() -> anyhow::Result<()> {
 
     let obligations = vat.open_obligations().await?;
     if obligations.is_empty() {
-        eprintln!("No open obligations :)");
+        eprintln!("{}", style("No open obligations :)").green());
         return Ok(());
     }
 
-    eprintln!("==> open-obligations");
+    eprintln!("{}", style("==> Open obligations").bold());
     for obligation in &obligations {
         eprintln!(
-            "  - {} start:{} end:{} due:{}",
-            obligation.period_key, obligation.start, obligation.end, obligation.due,
+            "{} start:{} end:{} due:{}",
+            style(&obligation.period_key).bold(),
+            style(&obligation.start).bold(),
+            style(&obligation.end).bold(),
+            style(&obligation.due).bold(),
         );
     }
     eprintln!();
 
     for obligation in obligations {
-        let msg = format!("Submit return for {}? [yN] ", obligation.period_key);
+        let msg = format!(
+            "Submit return for {}? [yN] ",
+            style(&obligation.period_key).bold()
+        );
         if prompt_input(&msg)?.eq_ignore_ascii_case("y") {
             let vat_due_sales = prompt_input("- VAT due on sales and other outputs: ")?.parse()?;
             let vat_due_acquisitions = prompt_input(
@@ -125,10 +137,14 @@ async fn main() -> anyhow::Result<()> {
                 finalised: true,
             };
 
-            let confirm_msg = format!("\n{vreturn:#?}\nSend? [yN] ");
+            let confirm_msg = format!(
+                "\n{}\n{} [yN] ",
+                style(format!("{vreturn:#?}")).cyan(),
+                style("Send?").bold()
+            );
             if prompt_input(&confirm_msg)?.eq_ignore_ascii_case("y") {
                 vat.submit_return(&vreturn).await?;
-                eprintln!("Ok ✓");
+                eprintln!("{}", style("Ok ✓").green());
             }
         }
     }
