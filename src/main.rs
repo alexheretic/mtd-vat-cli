@@ -23,11 +23,11 @@ pub struct Args {
     #[clap(long)]
     pub vrn: String,
 
-    /// Application client id.
+    /// HMRC registered app client id.
     #[clap(long, env = "CLIENT_ID")]
     pub client_id: String,
 
-    /// Application client secret.
+    /// HMRC registered app client secret.
     #[clap(long, env = "CLIENT_SECRET")]
     pub client_secret: String,
 
