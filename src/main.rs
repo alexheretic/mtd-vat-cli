@@ -48,7 +48,7 @@ async fn main() -> anyhow::Result<()> {
     let token = match access_token {
         Some(token) => token,
         _ => {
-            eprintln!("{}", style("Use browser permit app access...").yellow());
+            eprintln!("{}", style("Use browser to permit app access...").yellow());
             let token = auth::user_auth(&client_id, &client_secret)
                 .await?
                 .access_token;
