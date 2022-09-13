@@ -72,8 +72,7 @@ async fn main() -> anyhow::Result<()> {
     eprintln!("{}", style("==> Open obligations").bold());
     for obligation in &obligations {
         eprintln!(
-            "{} start:{} end:{} due:{}",
-            style(&obligation.period_key).bold(),
+            "period:{} - {} due:{}",
             style(&obligation.start).bold(),
             style(&obligation.end).bold(),
             style(&obligation.due).bold(),
@@ -83,8 +82,9 @@ async fn main() -> anyhow::Result<()> {
 
     for obligation in obligations {
         let msg = format!(
-            "Submit return for {}? [yN] ",
-            style(&obligation.period_key).bold()
+            "Submit return for period {} - {}? [yN] ",
+            style(&obligation.start).bold(),
+            style(&obligation.end).bold(),
         );
         if prompt_input(&msg)?.eq_ignore_ascii_case("y") {
             let vat_due_sales = prompt_input("- VAT due on sales and other outputs: ")?.parse()?;
