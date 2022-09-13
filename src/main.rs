@@ -79,6 +79,7 @@ async fn main() -> anyhow::Result<()> {
         );
     }
     eprintln!();
+    print_legal_declaration();
 
     for obligation in obligations {
         let msg = format!(
@@ -159,4 +160,12 @@ fn prompt_input(msg: &str) -> anyhow::Result<String> {
     let mut input = String::new();
     std::io::stdin().read_line(&mut input)?;
     Ok(input.trim().into())
+}
+
+fn print_legal_declaration() {
+    eprintln!(
+        "When you submit this VAT information you are making a legal\n\
+        declaration that the information is true and complete. A false declaration\n\
+        can result in prosecution.\n"
+    );
 }
