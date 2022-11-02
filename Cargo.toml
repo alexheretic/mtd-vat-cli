@@ -30,6 +30,9 @@ tokio = { version = "1.20.1", features = ["full"] }
 webbrowser = "0.8"
 whoami = "1.2.1"
 
+[target.'cfg(target_os = "linux")'.dependencies]
+board_id = "0.1.0"
+
 [features]
 default = []
 

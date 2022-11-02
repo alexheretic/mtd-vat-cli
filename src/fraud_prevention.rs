@@ -68,10 +68,32 @@ fn client_user_agent() -> String {
     let os_family = utf8_percent_encode(&os_type, NON_ALPHANUMERIC);
     let os_v = format!("{}", os.version());
     let os_v = utf8_percent_encode(&os_v, NON_ALPHANUMERIC);
+    let (manufacturer, model) = device_manufacturer_model();
+    let manufacturer = utf8_percent_encode(&manufacturer, NON_ALPHANUMERIC);
+    let model = utf8_percent_encode(&model, NON_ALPHANUMERIC);
 
     format!(
-        "os-family={os_family}&os-version={os_v}&device-manufacturer=unknown&device-model=unknown",
+        "os-family={os_family}&os-version={os_v}&device-manufacturer={manufacturer}&device-model={model}",
     )
+}
+
+/// Return `(device-manufacturer, device-model)`.
+#[allow(unused_mut)] // used on supported platforms
+fn device_manufacturer_model() -> (String, String) {
+    let mut manufacturer = "unknown".into();
+    let mut model = "unknown".into();
+
+    #[cfg(target_os = "linux")]
+    if let Ok(mobo) = board_id::BoardId::detect() {
+        if let Some(vendor) = mobo.vendor().and_then(|v| String::from_utf8(v.into()).ok()) {
+            manufacturer = vendor;
+        }
+        if let Some(name) = mobo.name().and_then(|v| String::from_utf8(v.into()).ok()) {
+            model = name;
+        }
+    }
+
+    (manufacturer, model)
 }
 
 fn client_user_ids() -> String {
