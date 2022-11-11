@@ -1,6 +1,6 @@
 [package]
 name = "mtd-vat-cli"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 description = "CLI tool to query & submit UK VAT returns"
 repository = "https://github.com/alexheretic/mtd-vat-cli"
