@@ -14,5 +14,8 @@ Required args:
 
 To explain how to answer the VAT return questions see [the gov guidance](https://www.gov.uk/guidance/how-to-fill-in-and-submit-your-vat-return-vat-notice-70012).
 
+## Getting a CLIENT_ID
+You need to apply for one. See [APPLYING](./APPLYING.md).
+
 ## Minimum supported rust compiler
 Maintained with [latest stable rust](https://gist.github.com/alexheretic/d1e98d8433b602e57f5d0a9637927e0c).
