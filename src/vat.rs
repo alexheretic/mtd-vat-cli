@@ -16,7 +16,7 @@ impl Client {
     }
 
     pub async fn open_obligations(&self) -> anyhow::Result<Vec<Obligation>> {
-        let body: Obligations = self
+        let mut body: Obligations = self
             .http
             .get(&format!(
                 "{API_URL}/organisations/vat/{}/obligations",
@@ -33,6 +33,7 @@ impl Client {
             .json()
             .await?;
 
+        body.obligations.sort_by(|a, b| a.start.cmp(&b.start));
         Ok(body.obligations)
     }
 
