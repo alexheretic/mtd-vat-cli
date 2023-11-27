@@ -3,9 +3,10 @@ use anyhow::{anyhow, Context};
 use axum::{extract::Query, routing::get, Extension, Router};
 use std::{
     collections::HashMap,
+    future::IntoFuture,
     sync::{Arc, Mutex},
 };
-use tokio::sync::oneshot;
+use tokio::{net::TcpListener, sync::oneshot};
 
 const REDIRECT_URL: &str = "http://localhost:54786/";
 
@@ -55,12 +56,14 @@ async fn listen_for_redirect() -> anyhow::Result<String> {
     let (tx, rx) = oneshot::channel();
 
     let tx = Arc::new(Mutex::new(Some(tx)));
-    let server = axum::Server::bind(&"0.0.0.0:54786".parse().unwrap()).serve(
+
+    let server = axum::serve(
+        TcpListener::bind("0.0.0.0:54786").await?,
         Router::new()
             .route("/", get(get_redirect))
-            .layer(Extension(tx))
-            .into_make_service(),
-    );
+            .layer(Extension(tx)),
+    )
+    .into_future();
 
     tokio::select! {
         r = server => Err(anyhow!("localhost server ended: {r:?}")),
