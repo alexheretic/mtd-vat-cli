@@ -71,8 +71,8 @@ pub struct Obligation {
     /// is 2018-02-28, the due date is 2018-03-29 (because the 31 March is a Saturday
     /// and the 30 March is Good Friday).
     pub due: String,
-    /// Which obligation statuses to return (O = Open, F = Fulfilled).
-    pub status: char,
+    // /// Which obligation statuses to return (O = Open, F = Fulfilled).
+    // pub status: char,
     /// The ID code for the period that this obligation belongs to.
     /// The format is a string of four alphanumeric characters.
     pub period_key: String,
