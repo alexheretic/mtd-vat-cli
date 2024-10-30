@@ -18,7 +18,7 @@ impl Client {
     pub async fn open_obligations(&self) -> anyhow::Result<Vec<Obligation>> {
         let mut body: Obligations = self
             .http
-            .get(&format!(
+            .get(format!(
                 "{API_URL}/organisations/vat/{}/obligations",
                 self.vrn
             ))
@@ -39,7 +39,7 @@ impl Client {
 
     pub async fn submit_return(&self, vreturn: &Return) -> anyhow::Result<()> {
         self.http
-            .post(&format!("{API_URL}/organisations/vat/{}/returns", self.vrn))
+            .post(format!("{API_URL}/organisations/vat/{}/returns", self.vrn))
             .header("Accept", "application/vnd.hmrc.1.0+json")
             .header("Authorization", format!("Bearer {}", self.access_token))
             .add_fraud_prevention_headers()
