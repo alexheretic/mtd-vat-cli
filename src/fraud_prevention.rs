@@ -1,7 +1,7 @@
 //! Fraud prevention data logic.
 //! See <https://developer.service.hmrc.gov.uk/guides/fraud-prevention/connection-method/desktop-app-direct>.
 use chrono::{SecondsFormat, Utc};
-use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
+use percent_encoding::{NON_ALPHANUMERIC, utf8_percent_encode};
 
 const DEVICE_ID: &str = "142454b1-6368-444b-97b6-15bfdf4e19a3";
 

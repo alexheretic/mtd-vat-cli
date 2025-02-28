@@ -1,6 +1,6 @@
-use crate::{error::ResponseExt, API_URL, WWW_URL};
-use anyhow::{anyhow, Context};
-use axum::{extract::Query, routing::get, Extension, Router};
+use crate::{API_URL, WWW_URL, error::ResponseExt};
+use anyhow::{Context, anyhow};
+use axum::{Extension, Router, extract::Query, routing::get};
 use std::{
     collections::HashMap,
     future::IntoFuture,

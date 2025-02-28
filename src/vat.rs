@@ -1,4 +1,4 @@
-use crate::{error::ResponseExt, fraud_prevention::FraudPreventionRequestBuilder, API_URL};
+use crate::{API_URL, error::ResponseExt, fraud_prevention::FraudPreventionRequestBuilder};
 
 pub struct Client {
     http: reqwest::Client,
