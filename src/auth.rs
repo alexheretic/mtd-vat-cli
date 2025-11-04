@@ -75,10 +75,10 @@ async fn get_redirect(
     Extension(tx): Extension<Arc<Mutex<Option<oneshot::Sender<String>>>>>,
     Query(mut params): Query<HashMap<String, String>>,
 ) -> &'static str {
-    if let Some(code) = params.remove("code") {
-        if let Some(tx) = tx.lock().unwrap().take() {
-            let _ = tx.send(code);
-        }
+    if let Some(code) = params.remove("code")
+        && let Some(tx) = tx.lock().unwrap().take()
+    {
+        let _ = tx.send(code);
     }
     "mtd-vat-cli redirect success, continue with CLI"
 }
