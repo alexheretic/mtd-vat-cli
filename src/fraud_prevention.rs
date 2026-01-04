@@ -97,7 +97,7 @@ fn device_manufacturer_model() -> (String, String) {
 }
 
 fn client_user_ids() -> String {
-    let username = whoami::username();
+    let username = whoami::username().unwrap_or_else(|_| "null".into());
     let username = utf8_percent_encode(&username, NON_ALPHANUMERIC);
     format!("os={username}")
 }
